@@ -38,14 +38,17 @@ int main() {
         updating = true;
       }
     }
+
     // updating
     if(updating) {
-      cells.applyKernelConvolution({{0.1, -0.1,  0.3},
-                                    {  0,    1, -0.3},
-                                    {-0.5, -0.1, 0.2}},
-                                    [&](const float &num) -> float {
-                                      return std::abs(num);
-                                    });
+      kernelType kernel = {{+0.1, -0.1, +0.3},
+                           {+0.0, +0.1, -0.3},
+                           {-0.5, -0.1, +0.1}};
+
+      cells.applyKernelConvolution(kernel,
+                                  [&](const float &num) -> float {
+                                    return std::abs(num);
+                                  });
       WaitTime(0.1);
     }
 

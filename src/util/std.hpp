@@ -6,3 +6,5 @@
 #include <functional>
 
 #include "../../include/raylib.h"
+
+using kernelType = std::vector<std::vector<float>>;

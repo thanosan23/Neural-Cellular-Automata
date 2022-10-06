@@ -85,13 +85,16 @@ struct CellManager {
       for(int x = 0; x < this->gridSize; ++x) {
         Cell *cell = this->getCell(x, y);
         DrawRectangle(x * pixelSize, y * pixelSize, pixelSize, pixelSize,
-            Color {0, 0, 0, static_cast<unsigned char>(255 * cell->getOpacity())});
+            Color {0, 0, 0, static_cast<unsigned char>(
+                255 * cell->getOpacity()
+            )});
       }
     }
   }
 
-  void applyKernelConvolution(const std::vector<std::vector<float>> &kernel,
+  void applyKernelConvolution(const kernelType &kernel,
       const std::function<float(float)> &activation) {
+
     std::vector<int> dx = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
     std::vector<int> dy = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 
@@ -106,8 +109,8 @@ struct CellManager {
           // wrap around the screen
           if(nx < 0) nx = this->gridSize + nx;
           if(ny < 0) ny = this->gridSize + ny;
-          if(nx > this->gridSize) nx = nx - this->gridSize;
-          if(ny > this->gridSize) ny = ny - this->gridSize;
+          if(nx >= this->gridSize) nx = nx - this->gridSize;
+          if(ny >= this->gridSize) ny = ny - this->gridSize;
 
           Cell *ncell = this->getCell(nx, ny);
           sum += ncell->getNextOpacity() * kernel[1+dy[i]][1+dx[i]];
