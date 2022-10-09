@@ -10,8 +10,13 @@ struct Cell {
     this->nextOpacity = 0;
   }
 
+  // getters and setters
   float getOpacity() {
     return this->opacity;
+  }
+
+  void setOpacity(const float &_opacity) {
+    this->opacity = _opacity;
   }
 
   float getNextOpacity() {
@@ -22,10 +27,7 @@ struct Cell {
     this->nextOpacity = _opacity;
   }
 
-  void step() {
-    this->opacity = this->nextOpacity;
-  }
-
+  // changing opacity of cell
   void darken() {
     this->opacity += 0.1;
     if(this->opacity > 1.0f) this->opacity = 1.0f;
@@ -44,6 +46,10 @@ struct Cell {
   void lightenNext() {
     this->nextOpacity -= 0.1;
     if(this->nextOpacity < 0.0f) this->nextOpacity = 0.0f;
+  }
+  // stepping through cellular automata simulation
+  void step() {
+    this->opacity = this->nextOpacity;
   }
 
 private:
@@ -92,6 +98,15 @@ struct CellManager {
     }
   }
 
+  void step() {
+    for(int y = 0; y < this->gridSize; ++y) {
+      for(int x = 0; x < this->gridSize; ++x) {
+        Cell *cell = this->getCell(x, y);
+        cell->step();
+      }
+    }
+  }
+
   void applyKernelConvolution(const kernelType &kernel,
       const std::function<float(float)> &activation) {
 
@@ -116,15 +131,6 @@ struct CellManager {
           sum += ncell->getNextOpacity() * kernel[1+dy[i]][1+dx[i]];
         }
         cell->setNextOpacity(activation(cell->getNextOpacity() + sum));
-      }
-    }
-  }
-
-  void step() {
-    for(int y = 0; y < this->gridSize; ++y) {
-      for(int x = 0; x < this->gridSize; ++x) {
-        Cell *cell = this->getCell(x, y);
-        cell->step();
       }
     }
   }

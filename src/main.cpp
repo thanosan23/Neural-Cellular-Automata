@@ -4,39 +4,42 @@
 #include "cell.hpp"
 
 constexpr int DIM = 800, FPS = 60;
+constexpr int CELL_SIZE = 4;
 
 int bound(const int &num, const int &min, const int &max) {
   return std::max(std::min(num, max), min);
+}
+
+std::pair<int, int> getMousePosBounded() {
+  std::pair<int, int> res;
+  Vector2 mousePos = GetMousePosition();
+  res.first = bound(static_cast<int>(mousePos.x), 0, DIM);
+  res.second = bound(static_cast<int>(mousePos.y), 0, DIM);
+  return res;
 }
 
 int main() {
   InitWindow(DIM, DIM, "Neural Cellular Automotan");
   SetTargetFPS(FPS);
 
-
-  CellManager cells(DIM, 5);
+  CellManager cells(DIM, CELL_SIZE);
   bool updating = false;
 
-  Vector2 mousePos;
-  int x, y;
+  int mouseX, mouseY;
 
   while(!WindowShouldClose()) {
     // input
     if(!updating) {
       if(IsMouseButtonDown(MOUSE_LEFT_BUTTON)) {
-        mousePos = GetMousePosition();
-        x = bound(static_cast<int>(mousePos.x), 0, DIM);
-        y = bound(static_cast<int>(mousePos.y), 0, DIM);
-        cells.darkenCell(x, y);
+        std::tie(mouseX, mouseY) = getMousePosBounded();
+        cells.darkenCell(mouseX, mouseY);
       } else if(IsMouseButtonDown(MOUSE_RIGHT_BUTTON)) {
-        mousePos = GetMousePosition();
-        x = bound(static_cast<int>(mousePos.x), 0, DIM);
-        y = bound(static_cast<int>(mousePos.y), 0, DIM);
-        cells.lightenCell(x, y);
+        std::tie(mouseX, mouseY) = getMousePosBounded();
+        cells.lightenCell(mouseX, mouseY);
       }
-      if(IsKeyPressed('R')) {
-        updating = true;
-      }
+
+      if(IsKeyPressed('R')) updating = true;
+
     }
 
     // updating

@@ -4,6 +4,7 @@
 #include <cassert>
 #include <vector>
 #include <functional>
+#include <utility>
 
 #include "../../include/raylib.h"
 
